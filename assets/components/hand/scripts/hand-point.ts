@@ -21,6 +21,7 @@ export class HandPoint extends Component {
     nodeBurst: Node = null;
 
     protected isActive: boolean = false;
+    protected activeDistance = 50;
 
     setActive(isActive: boolean) {
         let backgroundColor = Color.BLACK;
@@ -35,7 +36,7 @@ export class HandPoint extends Component {
 
         if (this.isActive !== isActive) {
             this.isActive = isActive;
-            const moveDistance = isActive ? 50 : -50;
+            const moveDistance = isActive ? this.activeDistance : -this.activeDistance;
             tween(this.nodePoint)
                 .to(0.3, { position: v3(this.nodePoint.x, this.nodePoint.y + moveDistance) })
                 .start();

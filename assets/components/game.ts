@@ -21,7 +21,8 @@ import {
     SplitHandler,
     StandHandler,
 } from "../states/bets";
-import { NewSlidingChip } from "db://shared-components/game/sliding-chip/scripts/components/new-sliding-chip";
+import SlidingChip from "db://shared-components/game/sliding-chip/scripts/components/sliding-chip";
+import { ButtonContainer } from "./button/scripts/button-container";
 
 const { Connection, FormatUtils } = gc;
 
@@ -39,8 +40,8 @@ export default class GameBlackjackComponent extends GameComponentBase {
     @property(Label)
     lblTotalBetAmount: Label = null;
 
-    @property(NewSlidingChip)
-    slidingChip: NewSlidingChip = null;
+    @property(SlidingChip)
+    slidingChip: SlidingChip = null;
 
     @property(Node)
     nodeAudioContainer: Node = null;
@@ -60,40 +61,14 @@ export default class GameBlackjackComponent extends GameComponentBase {
     @property(Prefab)
     prbCard: Prefab = null;
 
-    @property(Node)
-    btnDeal: Node = null;
-
-    @property(Node)
-    btnClear: Node = null;
-
-    @property(Node)
-    btnHit: Node = null;
-
-    @property(Node)
-    btnStand: Node = null;
-
-    @property(Node)
-    btnDouble: Node = null;
-
-    @property(Node)
-    btnSplit: Node = null;
-
-    @property(Node)
-    btnRebet: Node = null;
-
-    @property(Node)
-    btnNewBet: Node = null;
+    @property(ButtonContainer)
+    buttonContainer: ButtonContainer = null;
 
     override namespace = "";
     protected enableFixHandleFinish = true;
     protected enableEventShowHideGame = true;
 
-    protected cardBoxPosition = Vec3.ZERO;
-    protected chipBoxPosition = Vec3.ZERO;
     private audioContainer: AudioContainer = null;
-    private isAnimating = false;
-    private prevResult: any;
-    private currentRoundId: number;
 
     private isFinish = false;
 
@@ -103,8 +78,6 @@ export default class GameBlackjackComponent extends GameComponentBase {
         this.initPlayerSelections();
         this.handleStaticNodeAndSetEmptyLabels();
         this.audioContainer = this.nodeAudioContainer.getComponent(AudioContainer);
-        this.cardBoxPosition = this.cardBox?.worldPosition || Vec3.ZERO;
-        this.chipBoxPosition = this.slidingChip.node?.worldPosition || Vec3.ZERO;
         this.dealer?.init(this.cardBox, this.garbage, this.prbCard);
         this.playerHandsContainer?.init(this.cardBox, this.garbage, this.slidingChip, this.prbCard);
     }
@@ -248,9 +221,10 @@ export default class GameBlackjackComponent extends GameComponentBase {
         // TODO: update visibility of buttons
     }
 
-    private finishGame() {
+    private async finishGame() {
         // TODO: show result
-        this.dealer?.revealDealerCards();
+        await this.dealer?.revealDealerCards();
+        this.playerHandsContainer.settle();
         // TODO: settle
     }
 

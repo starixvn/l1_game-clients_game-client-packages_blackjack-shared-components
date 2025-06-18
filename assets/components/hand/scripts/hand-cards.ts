@@ -31,6 +31,7 @@ export class HandCards extends Component {
 
     instantiateCard(initPosition?: Vec3, cardValue?: CardType) {
         const cardPfb = instantiate(this.cardPrefab);
+        cardPfb.layer = this.cardContainer.layer;
         const position = initPosition ?? this.cardContainer.getComponent(UITransform).convertToNodeSpaceAR(this.cardBox.worldPosition);
         cardPfb.position = position;
         const cardComponent = cardPfb.getComponent(FairnessCard3D);

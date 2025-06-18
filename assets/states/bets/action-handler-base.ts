@@ -20,11 +20,11 @@ export class ActionHandlerBase implements gc.Shared.IHandler<void> {
 
     handle() {
         if (this.isValidBet()) {
+            this.roundStore.action = this.action;
             this.updateState();
             const data = this.createBetData();
             this.connectionStore.send(gc.GameClientEmitMessage.Bet.eventName, data);
             this.retryGameHandler.handle();
-            this.roundStore.action = this.action;
         }
     }
 

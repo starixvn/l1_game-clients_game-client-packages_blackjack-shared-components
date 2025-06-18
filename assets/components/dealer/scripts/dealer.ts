@@ -24,11 +24,6 @@ export class DealerComponent extends Hand {
         this.cards = cards;
     }
 
-    @render(DealerStore, (store) => store.point)
-    private handlePointData(point: number) {
-        this.point = point;
-    }
-
     async dealFirstCard() {
         await this.dealCard(0);
     }
@@ -75,6 +70,5 @@ export class DealerComponent extends Hand {
     async reset() {
         await super.reset();
         this.dealtCards = [];
-        this.point = 0;
     }
 }

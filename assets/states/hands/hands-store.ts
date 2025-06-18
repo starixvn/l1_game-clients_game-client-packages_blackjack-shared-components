@@ -14,7 +14,7 @@ export class HandsStore {
     hands: { [key: number]: HandType } = {};
     activeHandId = 0;
     activePosition = 0;
-    winningHands: { [key: number]: HandType } = {};
+    winningHands: { [pos: number]: number } = {};
 
     placeChip(position: number, betAmount: number) {
         const hand = this.hands[position] || { pos: position, bet: 0 };
@@ -46,13 +46,10 @@ export class HandsStore {
     }
 
     settleHands(winningHands: { id: number; betwin: number }[]) {
-        this.winningHands = winningHands.reduce((hands, winningHand) => {
+        this.winningHands = winningHands.reduce((acc, winningHand) => {
             const hand = Object.values(this.hands).find((h) => h.id === winningHand.id);
-            if (hand) {
-                hand.betwin = winningHand.betwin ?? 0;
-                hands[hand.pos] = hand;
-            }
-            return hands;
+            acc[hand.pos] = winningHand.betwin;
+            return acc;
         }, {});
     }
 

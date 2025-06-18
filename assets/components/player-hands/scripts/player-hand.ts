@@ -3,7 +3,7 @@ import { CardType, HandType, BlackjackActions } from "../../../constants";
 import { _decorator, CCInteger, Label, Node, Prefab, tween, UITransform, Vec3 } from "cc";
 import { HandsStore } from "../../../states/hands";
 import { BetPlaceContainer } from "./bet-place-container";
-import { NewSlidingChip } from "db://shared-components/game/sliding-chip/scripts/components/new-sliding-chip";
+import SlidingChip from "db://shared-components/game/sliding-chip/scripts/components/sliding-chip";
 import { Hand } from "../../hand/scripts/hand";
 
 const { ccclass, property } = _decorator;
@@ -31,9 +31,9 @@ export class PlayerHand extends Hand {
         return this.handData?.actions?.includes(BlackjackActions.STAND);
     }
 
-    initPlayerHand(cardBox: Node, garbage: Node, slidingChip: NewSlidingChip, chipContainer: Node, prbCard: Prefab) {
+    initPlayerHand(cardBox: Node, garbage: Node, prbCard: Prefab, slidingChip: SlidingChip, chipContainer: Node, nodeTakeChip: Node) {
         this.init(cardBox, garbage, prbCard);
-        this.betPlaceContainer.init(this.position, slidingChip, chipContainer);
+        this.betPlaceContainer?.init(this.position, slidingChip, chipContainer, nodeTakeChip);
     }
 
     @render(HandsStore, (store) => store.hands)
@@ -41,8 +41,8 @@ export class PlayerHand extends Hand {
         if (hands[this.position]) {
             this.handData = hands[this.position];
             const { bet, cards, id } = this.handData;
-            this.betPlaceContainer.setBetAmount(bet);
-            this.betPlaceContainer.setClearButtonActive(bet && (!cards || cards.length === 0));
+            this.betPlaceContainer?.setBetAmount(bet);
+            this.betPlaceContainer?.setClearButtonActive(bet && (!cards || cards.length === 0));
             this.handId && id && (this.handId.string = id.toString());
         }
     }
@@ -114,6 +114,6 @@ export class PlayerHand extends Hand {
         await super.reset();
         this.handData = null;
         this.handId && (this.handId.string = "");
-        this.betPlaceContainer.reset();
+        this.betPlaceContainer?.reset();
     }
 }

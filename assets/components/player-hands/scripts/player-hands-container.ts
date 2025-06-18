@@ -3,7 +3,7 @@ import { ObserverComponent } from "db://shared-components/shared/common-componen
 import Observer from "observer";
 import { PlayerHand } from "./player-hand";
 import { HandHandlers, HandsStore } from "../../../states/hands";
-import { NewSlidingChip } from "db://shared-components/game/sliding-chip/scripts/components/new-sliding-chip";
+import SlidingChip from "db://shared-components/game/sliding-chip/scripts/components/sliding-chip";
 
 const { ccclass, property } = _decorator;
 const { handle, render } = Observer;
@@ -16,11 +16,14 @@ export class PlayerHandsContainer extends ObserverComponent {
     @property([Node])
     chipContainers: Node[] = [];
 
+    @property(Node)
+    nodeTakeChip: Node = null;
+
     private activePosition = 0;
 
-    init(cardBox: Node, garbage: Node, slidingChip: NewSlidingChip, prbCard: Prefab) {
+    init(cardBox: Node, garbage: Node, slidingChip: SlidingChip, prbCard: Prefab) {
         this.hands.forEach((hand, index) => {
-            hand.initPlayerHand(cardBox, garbage, slidingChip, this.chipContainers[index], prbCard);
+            hand.initPlayerHand(cardBox, garbage, prbCard, slidingChip, this.chipContainers[index], this.nodeTakeChip);
         });
     }
 
@@ -56,6 +59,12 @@ export class PlayerHandsContainer extends ObserverComponent {
 
     private getActiveHand() {
         return this.hands.find((hand) => hand.position === this.activePosition);
+    }
+
+    settle() {
+        this.hands.forEach((hand) => {
+            hand.betPlaceContainer.settleChip();
+        });
     }
 
     async splitCard() {

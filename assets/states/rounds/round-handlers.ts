@@ -22,6 +22,8 @@ export class RoundHandlers implements gc.Shared.IMultipleHandlers {
             this.handsStore.setHands(data.hands);
             this.dealerStore.setCards(data.dealer);
             this.roundStore.action = BlackjackActions.RUNNING;
+        } else {
+            this.roundStore.action = BlackjackActions.NEW;
         }
     }
 
